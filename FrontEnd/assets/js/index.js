@@ -45,7 +45,6 @@ async function getAllWorks() {
 *     <figcaption>Abajour Tahina</figcaption>
 * </figure>
 * @param {an array full of Works items} worksArray 
-* @param
 */
 function constructWorksItems(worksArray, selectedCategory) {
     if (!selectedCategory) {
