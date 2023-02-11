@@ -1,30 +1,97 @@
+const isLocal = window.location.protocol === `file:`;
+const baseURL = isLocal ? `http://localhost:5678` : `${window.location.origin}`;
+const body = document.querySelector(`body`);
+const loginForm = document.querySelector(`#loginForm`);
+const CONNECTED = `connected`,
+    TOKEN = `token`,
+    ERROR = `error`,
+    WORKS_ARRAY = `worksArray`,
+    CATEG_ARRAY = `categoriesArray`,
+    IN_LOGIN = `inLogin`;
+
+
+
 function docIsReady() {
+    setUpLocalStorage();
+    fetchDatas().then(([worksArray, categoriesArray]) => {
+        // Construct works items and filter buttons
+        constructWorksItems(worksArray);
+        filtersButton(categoriesArray);
+    });
+    handleClickNavigation();
+    loginForm.addEventListener(`submit`, connexion);
+}
+
+/**
+* delete works from localstorage, and check if we are connected from less an hour
+* 
+*/
+function setUpLocalStorage() {
+    localStorage.removeItem(WORKS_ARRAY);
+    localStorage.removeItem(CATEG_ARRAY);
+    const connected = JSON.parse(localStorage.getItem(TOKEN));
+    if (connected && new Date(connected.expiration) >= new Date()) {
+        body.classList.add(CONNECTED);
+    } else {
+        localStorage.removeItem(TOKEN);
+    }
+}
+
+/**
+* add click event on each navigation link
+* 
+*/
+function handleClickNavigation() {
+    const navigationLinks = document.querySelectorAll(`#navigationLinks li`);
+    navigationLinks.forEach(link => {
+        link.addEventListener(`click`, (e) => {
+            switch(e.target.innerHTML) {
+                case `projets` :
+                    body.classList.remove(IN_LOGIN);
+                break;
+                case `contact` :
+
+                break;
+                case `login` :
+                    body.classList.add(IN_LOGIN);
+                break;
+                case `logout` :
+                    localStorage.removeItem(TOKEN);
+                    body.classList.remove(CONNECTED);
+                default:
+                break;
+            }
+        });
+    });
+}
+
+/**
+* Fetch works and Categories from backend
+*   if localstorage is already set, no need to ping backend again
+* 
+*/
+async function fetchDatas() {
     let worksArray = [];
     let categoriesArray = [];
 
     // Check if the worksArray and categoriesArray exist in the local storage
-    if (localStorage.getItem(`worksArray`) && localStorage.getItem(`categoriesArray`)) {
-        worksArray = JSON.parse(localStorage.getItem(`worksArray`));
-        categoriesArray = JSON.parse(localStorage.getItem(`categoriesArray`));
-
-        // Construct works items and filter buttons
-        constructWorksItems(worksArray);
-        filtersButton(categoriesArray);
-
+    if (localStorage.getItem(WORKS_ARRAY) && localStorage.getItem(CATEG_ARRAY)) {
+        worksArray = JSON.parse(localStorage.getItem(WORKS_ARRAY));
+        categoriesArray = JSON.parse(localStorage.getItem(CATEG_ARRAY));
+        return [worksArray, categoriesArray];
     } else {
-        // Call API to get all works
-        getAllWorks().then(value => {
-            worksArray = value;
-            localStorage.setItem(`worksArray`, JSON.stringify(worksArray));
-            constructWorksItems(worksArray);
-        });
-
-        // Call API to get all categories
-        getAllCategories().then(value => {
-            categoriesArray = value;
-            localStorage.setItem(`categoriesArray`, JSON.stringify(categoriesArray));
-            filtersButton(categoriesArray);
-        });
+        return Promise.all([
+            getAllWorks().then(value => {
+                worksArray = value;
+                localStorage.setItem(WORKS_ARRAY, JSON.stringify(worksArray));
+                return worksArray;
+            }),
+            getAllCategories().then(value => {
+                categoriesArray = value;
+                localStorage.setItem(CATEG_ARRAY, JSON.stringify(categoriesArray));
+                return categoriesArray;
+            })
+        ]);
     }
 }
 
@@ -33,8 +100,13 @@ function docIsReady() {
 * @returns promise of works in array
 */
 async function getAllWorks() {
-    const works = await fetch(`http://localhost:5678/api/works`).then(d => d.json());
+    const works = await fetch(`${baseURL}/api/works`).then(d => d.json());
     return works;
+}
+
+async function getAllCategories() {
+    const categories = await fetch(`${baseURL}/api/categories`).then(d => d.json());
+    return categories;
 }
 
 /**
@@ -73,11 +145,6 @@ function constructWorksItems(worksArray, selectedCategory) {
     }
 }
 
-
-async function getAllCategories() {
-    const categories = await fetch(`http://localhost:5678/api/categories`).then(d => d.json());
-    return categories;
-}
 /**
 * 
 * @param {Backend categories list } categoriesArray 
@@ -112,14 +179,28 @@ function creatAndAppendButton(buttonLabel, categoryId, locationToAppend) {
     button.addEventListener(`click`, filterWorksCallback);
 }
 /**
- * 
+ * callback function of filter click
  * @param {The event bubbled up by JavaScript for a click} event 
  */
 function filterWorksCallback(event) {
     const target = event.target;
+    resetSelectedClass();
+    target.classList.add(`selected`);
     const selectedCategory = parseInt(target.getAttribute(`data-id`));
-    constructWorksItems(JSON.parse(localStorage.getItem(`worksArray`)), selectedCategory);
-    
+    fetchDatas().then(() => {
+        constructWorksItems(JSON.parse(localStorage.getItem(WORKS_ARRAY)), selectedCategory);
+    }); 
+}
+
+/**
+* remove special class on buttons
+* 
+*/
+function resetSelectedClass() {
+    const buttonCategories = document.querySelectorAll(`.buttonCategory`);
+    buttonCategories.forEach(button => {
+        button.classList.remove(`selected`);
+    });
 }
 
 
