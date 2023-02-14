@@ -1,13 +1,13 @@
 const isLocal = window.location.protocol === `file:`;
 const baseURL = isLocal ? `http://localhost:5678` : `${window.location.origin}`;
-const body = document.querySelector(`body`);
-const loginForm = document.querySelector(`#loginForm`);
+const BODY = document.querySelector(`body`);
+const LOGIN_FORM = document.querySelector(`#loginForm`);
 const CONNECTED = `connected`,
-    TOKEN = `token`,
-    ERROR = `error`,
-    WORKS_ARRAY = `worksArray`,
-    CATEG_ARRAY = `categoriesArray`,
-    IN_LOGIN = `inLogin`;
+TOKEN = `token`,
+ERROR = `error`,
+WORKS_ARRAY = `worksArray`,
+CATEG_ARRAY = `categoriesArray`,
+IN_LOGIN = `inLogin`;
 
 
 
@@ -19,7 +19,10 @@ function docIsReady() {
         filtersButton(categoriesArray);
     });
     handleClickNavigation();
-    loginForm.addEventListener(`submit`, connexion);
+    LOGIN_FORM.addEventListener(`submit`, connexion);
+    
+    handleClickModification();
+
 }
 
 /**
@@ -31,7 +34,7 @@ function setUpLocalStorage() {
     localStorage.removeItem(CATEG_ARRAY);
     const connected = JSON.parse(localStorage.getItem(TOKEN));
     if (connected && new Date(connected.expiration) >= new Date()) {
-        body.classList.add(CONNECTED);
+        BODY.classList.add(CONNECTED);
     } else {
         localStorage.removeItem(TOKEN);
     }
@@ -47,17 +50,14 @@ function handleClickNavigation() {
         link.addEventListener(`click`, (e) => {
             switch(e.target.innerHTML) {
                 case `projets` :
-                    body.classList.remove(IN_LOGIN);
-                break;
-                case `contact` :
-
+                BODY.classList.remove(IN_LOGIN);
                 break;
                 case `login` :
-                    body.classList.add(IN_LOGIN);
+                BODY.classList.add(IN_LOGIN);
                 break;
                 case `logout` :
-                    localStorage.removeItem(TOKEN);
-                    body.classList.remove(CONNECTED);
+                localStorage.removeItem(TOKEN);
+                BODY.classList.remove(CONNECTED);
                 default:
                 break;
             }
@@ -73,7 +73,7 @@ function handleClickNavigation() {
 async function fetchDatas() {
     let worksArray = [];
     let categoriesArray = [];
-
+    
     // Check if the worksArray and categoriesArray exist in the local storage
     if (localStorage.getItem(WORKS_ARRAY) && localStorage.getItem(CATEG_ARRAY)) {
         worksArray = JSON.parse(localStorage.getItem(WORKS_ARRAY));
@@ -152,9 +152,15 @@ function constructWorksItems(worksArray, selectedCategory) {
 function filtersButton(categoriesArray){  
     const filtersHTML = document.getElementById(`filtersButton`);
     
-    creatAndAppendButton(`Tous`,0, filtersHTML);    
+    const buttonAll = creatAndAppendButton(`Tous`,0, filtersHTML, `buttonCategory`);  
+    buttonAll.addEventListener(`click`, filterWorksCallback);  
     for (const category of categoriesArray) {                
-        creatAndAppendButton(category.name,category.id, filtersHTML);
+        const buttonByCategory = creatAndAppendButton(category.name,
+            category.id,
+            filtersHTML,
+            `buttonCategory`
+            );
+        buttonByCategory.addEventListener(`click`, filterWorksCallback);
     }
 }
 /**
@@ -165,28 +171,28 @@ function filtersButton(categoriesArray){
 * <span id="filtersButton">
 * </span>
 */
-function creatAndAppendButton(buttonLabel, categoryId, locationToAppend) {
+function creatAndAppendButton(buttonLabel, dataId, locationToAppend, classList) {
     const button = document.createElement(`button`);
     
     // Creat a class for labelButton to use it in CSS    
-    button.setAttribute(`class`, `buttonCategory`);
-    button.setAttribute(`data-id`, categoryId); 
+    button.setAttribute(`class`, classList);
+    button.setAttribute(`data-id`, dataId); 
     
     const buttonName = document.createTextNode(buttonLabel);
     button.appendChild(buttonName);
-    locationToAppend.appendChild(button);  
-    
-    button.addEventListener(`click`, filterWorksCallback);
+    locationToAppend.appendChild(button);   
+    return button;   
 }
 /**
- * callback function of filter click
- * @param {The event bubbled up by JavaScript for a click} event 
- */
+* callback function of filter click
+* @param {The event bubbled up by JavaScript for a click} event 
+*/
 function filterWorksCallback(event) {
     const target = event.target;
     resetSelectedClass();
     target.classList.add(`selected`);
     const selectedCategory = parseInt(target.getAttribute(`data-id`));
+    
     fetchDatas().then(() => {
         constructWorksItems(JSON.parse(localStorage.getItem(WORKS_ARRAY)), selectedCategory);
     }); 
@@ -202,6 +208,8 @@ function resetSelectedClass() {
         button.classList.remove(`selected`);
     });
 }
+
+
 
 
 

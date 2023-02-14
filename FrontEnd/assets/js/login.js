@@ -12,8 +12,8 @@ async function connexion(event) {
     if (email && password) {
         login(email, password)
         .then(data => {
-            body.classList.add(CONNECTED);
-            body.classList.remove(IN_LOGIN);
+            BODY.classList.add(CONNECTED);
+            BODY.classList.remove(IN_LOGIN);
             // expiration date, for the token ( 1 hour)
             const expirationInSeconds = 3600;
             const expirationDate = new Date(new Date().getTime() + expirationInSeconds * 1000);

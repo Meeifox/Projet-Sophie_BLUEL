@@ -112,54 +112,78 @@ li:hover {
 
 body.inLogin #loginPage {
 	display: flex;
-    flex-direction: column;
-    align-items: center;
+	flex-direction: column;
+	align-items: center;
 }
 
 body.connected .hideWhenConnected, body:not(.connected) .showWhenConnected {
 	display: none !important;
 }
 
+body.connected.inModal #overlay, body.connected.inModal #modalContainer {
+	display: block;
+}
+
+body.connected.inModal {
+	overflow-y: hidden;
+}
+
+
 #introduction {
 	display: flex;
 	align-items: center;
 }
-#introduction figure {
-	flex: 1
+
+#introduction .introFigure {
+	display: flex;
+	flex-direction: column;
+	align-items: flex-start;	
+	margin-left: 7%;
+	flex: 1;
 }
+
 #introduction img {
 	display: block;
-	margin: auto;
 	width: 80%;
+	
 }
 
 #introduction article {
 	flex: 1
 }
+
 #introduction h2 {
-	margin-bottom: 1em;
+	
 }
 
 #introduction p {
 	margin-bottom: 0.5em;
 }
-#portfolio h2 {
-	text-align: center;
+
+
+.portfolioConnected {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	gap: 4em ;
 	margin-bottom: 1em;
 }
+
+
 #filtersButton {
 	display: flex;
 	justify-content: center;
 }
+
 #filtersButton .buttonCategory {    
 	border: 1px solid #1D6154;
 	border-radius: 60px;
-    padding: 1%;
-    margin: 1%;
-    font-family: 'Syne';
-    font-style: normal;
-    font-weight: 700;
-    font-size: 16px;
+	padding: 1%;
+	margin: 1%;
+	font-family: 'Syne';
+	font-style: normal;
+	font-weight: 700;
+	font-size: 16px;
 }
 
 #filtersButton .buttonCategory:hover, #filtersButton .buttonCategory.selected {
@@ -189,12 +213,13 @@ body.connected .hideWhenConnected, body:not(.connected) .showWhenConnected {
 	margin: auto;
 }
 #contact > * {
-	text-align: center;
-	
+	text-align: center;	
 }
+
 #contact h2{
 	margin-bottom: 20px;
 }
+
 #contact form {
 	text-align: left;
 	margin-top:30px;
@@ -227,50 +252,67 @@ input[type="submit"]{
 	border-radius: 60px ;
 }
 
+.buttonModify {
+	border: none;
+	text-decoration: none;
+	width: auto;
+	border-style: none;
+	background-color: transparent;
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 16px;
+	padding-left: 0;
+}
 
+.buttonModify:hover {
+	cursor: pointer;
+	opacity: 80%;
+}
 
 #loginPage h2 {
-font-family: 'Syne';
-font-style: normal;
-font-weight: 700;
-font-size: 30px;
-line-height: 36px;
-text-align: center;
-color: #1D6154;
+	font-family: 'Syne';
+	font-style: normal;
+	font-weight: 700;
+	font-size: 30px;
+	line-height: 36px;
+	text-align: center;
+	color: #1D6154;
 }
 
 #loginForm{
-    display: flex;
-    flex-direction: column;
+	display: flex;
+	flex-direction: column;
 }
 
 #loginForm input{
-    margin-top: 15px;
-    margin-bottom: 15px;
-    width : 379px;
-    height: 50px;
-    border: none;
-    box-shadow: 0px 4px 14px rgb(0 0 0 / 9%);
+	margin-top: 15px;
+	margin-bottom: 15px;
+	width : 379px;
+	height: 50px;
+	border: none;
+	box-shadow: 0px 4px 14px rgb(0 0 0 / 9%);
 }
 
 #loginForm #submitButton {
-    width: 180px;
-    height: 50px;
-    font-size: 1.2em;
-    font-family: 'Syne';
-    font-weight: 700;
-    color: white;
-    background-color: #1D6154;
-
-    margin : 2em auto ;
-    border: none;
-    box-shadow: 0px 4px 14px rgb(0 0 0 / 9%);
-    text-align: center;
-    border-radius: 60px ;
+	width: 180px;
+	height: 50px;
+	font-size: 1.2em;
+	font-family: 'Syne';
+	font-weight: 700;
+	color: white;
+	background-color: #1D6154;
+	
+	margin : 2em auto ;
+	border: none;
+	box-shadow: 0px 4px 14px rgb(0 0 0 / 9%);
+	text-align: center;
+	border-radius: 60px ;
 }
 
 #loginForm #submitButton:hover {
-    cursor: pointer;
+	cursor: pointer;
 }
 
 #errorMessageConnexion {
@@ -282,6 +324,125 @@ color: #1D6154;
 	display: block;
 }
 
+#overlay {
+	display: none;
+	position: fixed;
+	opacity: 70%;
+	background-color: black;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+#modalContainer {	
+	display: none;
+	position: fixed;
+	width: 630px;
+	height: 730px;
+	margin: auto;
+	top : 5%;
+	left: 0;
+	right: 0;
+	background: #ffffff;
+	border-radius: 10px;
+}
+
+#modalContainer h2 {
+	padding: 3%;
+	text-align: center;
+}
+
+.bottomButton {
+	display: flex;
+	flex-direction: column;
+	justify-content: flex-end;
+	align-items: center;
+}
+#modalContainer h2 {
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 26px;
+	line-height: 30px;
+	text-align: center;
+}
+#modalContainer .validationButton {
+	border: 1px solid #ffffff;
+	background-color:#1D6154 ;
+	border-radius: 60px;
+	height: 36px;
+	padding: 1% ;
+	margin: 1%;
+	font-family: 'Syne';
+	font-style: normal;
+	font-weight: 700;
+	font-size: 16px;
+	width: 350px;
+	color: #fff;
+}
+
+#modalContainer .validationButton:hover {
+	cursor: pointer;
+	background-color: #A7A7A7 ;
+}
+
+.bottomButton #deleteGallery {
+	padding: 2%;
+	background-color: transparent;
+	border-color: transparent;
+	color: #D65353;
+	font-family: 'Syne';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 14px;
+	line-height: 17px;
+}
+
+.bottomButton #deleteGallery {
+	cursor: pointer;
+}
+
+
+.closeModal {
+	padding : 10px ;
+	font-size: 16px;
+	position: absolute;
+	top : 10px;
+	right : 10px;
+	cursor: pointer;
+	border: none;
+	background-color: transparent;
+}
+#picturesGallery {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+	height: 100%;
+	margin: 0;
+	
+}
+#editGallery {
+	display: grid;
+	grid-template-columns: repeat(5,80px);
+	grid-gap: 20px;
+}
+
+#editGallery img {
+	display: grid;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+#editGallery figcaption {
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 400;
+	font-size: 12px;
+	line-height: 14px;
+}
+
 footer nav ul {
 	display: flex;
 	justify-content: flex-end;
@@ -289,3 +450,218 @@ footer nav ul {
 }
 
 
+#editGallery .movePicture {
+	display: none;
+	position: absolute;
+	right: 25px;
+	font-weight: 600;
+	
+	
+}
+#editGallery .deletePicture {
+	display: flex;
+	position: absolute;
+	right: 6px;
+	font-weight: 300;
+	
+}
+
+#editGallery figure{
+	position: relative;
+}
+#editGallery figure button{
+	cursor: pointer;
+	align-items: center;
+	justify-content: center;
+	top: 5px;
+	background-color: #000000;
+	color: #fff;
+	border-radius: 2px;
+	width: 17px;
+	height: 17px;
+	
+}
+
+#editGallery figure:hover .movePicture {
+	display: flex;
+}
+
+.separator {
+	
+	border: 1px solid #B3B3B3;
+	width: 420px;
+	height: 0px;
+	
+}
+
+#modalContainer.showUpload #uploadPicture {
+	display: flex;
+	flex-direction: column;
+	row-gap: 40px;
+	align-items: center;
+}
+
+#uploadPicture, #modalContainer.showUpload #picturesGallery {
+	display: none;
+}
+
+#uploadForm {
+	display: flex;
+	flex-direction: column;
+	justify-content: space-evenly;
+	align-items: center;
+	row-gap: 10px;
+	width: 420px;
+	height: 90%;
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 16px;	
+	color: #3D3D3D;
+}
+
+.pictureRectangle{
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: space-evenly;
+
+}
+.pictureRectangle.hide {
+	display: none;
+}
+.pictureRectangle .fa-image {
+	font-size: 60px;
+	font-weight: 100;
+	opacity: 10%;
+}
+.pictureRectangle input {
+	width: 173px;
+	height: 36px;
+	background: #CBD6DC;
+	border-radius: 50px;
+	border-color: transparent;
+
+	font-family: 'Work Sans';
+	font-style: normal;
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 16px;
+	text-align: center;
+	
+	color: #306685;
+}
+.rectangleBar, .navbar {
+	border-style: hidden;
+	width: 100%;
+    height: 51px;
+    background: #FFFFFF;
+    box-shadow: 0px 4px 14px rgb(0 0 0 / 9%);
+    box-sizing: border-box;    
+}
+.rectangleBar, .navbar:hover {
+	border-style: hidden;
+}
+
+.formPictureRectangle {
+	display: flex;
+    flex-direction: column;
+    row-gap: 10px;
+    align-self: center;
+    width: 420px;
+}
+
+#dropArea {
+	display: flex;
+	align-items: stretch;
+    justify-content: center;
+	width: 420px;
+	height: 170px;
+	background-color: #E8F1F7;
+	border-radius: 3px;
+}
+#dropArea .newUploadImage {
+	display: flex;
+	justify-content: center;
+	width: auto;
+	max-height: 170px;
+}
+
+.highlight {
+	border: 2px solid #f38181;
+	background-color: #f9d7d7;
+	}
+
+#uploadPicture .validationButton {
+	width: 250px;
+}
+
+/* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+/* //////////////////////LOADING BAR////////////////////////////// */
+/* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
+
+.lastModal {
+	position: absolute;
+	top : 10px;
+	left: 10px;
+}
+#modalSpinner {
+	display: none;
+	opacity: 0;
+	transition: opacity 0.5s ease-in-out;
+	position: absolute;
+	top: 50px;
+	bottom: 20px;
+	right: 0;
+	left: 0;
+	background-color: #fff;
+	justify-content: center;
+	align-items: center;
+}
+
+#modalContainer.spinner #modalSpinner {
+	opacity: 1;
+	display: flex;
+}
+
+#modalContainer.spinner > section {
+	opacity: 0;
+}
+
+#modalContainer > section {
+	transition: opacity 0.5s ease-in-out;
+	opacity: 1;
+}
+
+.loader {
+	width: 64px;
+	height: 64px;
+	border-radius: 50%;
+	position: relative;
+	animation: rotate 0.75s linear infinite
+}
+.loader::before , .loader::after {
+	content: "";
+	box-sizing: border-box;
+	position: absolute;
+	inset: 0px;
+	border-radius: 50%;
+	border: 10px solid #FFF;
+	animation: prixClipFix 1.5s linear infinite ;
+}
+.loader::after{
+	transform: rotate3d(90, 90, 0, 180deg );
+	border-color: #FF3D00;
+}
+
+@keyframes rotate {
+	0%   {transform: rotate(0deg)}
+	100%   {transform: rotate(360deg)}
+}
+
+@keyframes prixClipFix {
+	0%   {clip-path:polygon(50% 50%,0 0,0 0,0 0,0 0,0 0)}
+	50%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 0,100% 0,100% 0)}
+	75%, 100%  {clip-path:polygon(50% 50%,0 0,100% 0,100% 100%,100% 100%,100% 100%)}
+}
