@@ -11,18 +11,22 @@ IN_LOGIN = `inLogin`;
 
 
 
-function docIsReady() {
+function docIsReady(softRefresh) {
     setUpLocalStorage();
     fetchDatas().then(([worksArray, categoriesArray]) => {
         // Construct works items and filter buttons
         constructWorksItems(worksArray);
-        filtersButton(categoriesArray);
-    });
-    handleClickNavigation();
-    LOGIN_FORM.addEventListener(`submit`, connexion);
+        if (!softRefresh){
+            filtersButton(categoriesArray);
+        }        
+    });   
+    if (!softRefresh) {
+        handleClickNavigation();
+        LOGIN_FORM.addEventListener(`submit`, connexion);
+    }    
     
-    handleClickModification();
-
+    handleClickModification(softRefresh);
+    
 }
 
 /**
@@ -160,57 +164,58 @@ function filtersButton(categoriesArray){
             filtersHTML,
             `buttonCategory`
             );
-        buttonByCategory.addEventListener(`click`, filterWorksCallback);
+            buttonByCategory.addEventListener(`click`, filterWorksCallback);
+        }
     }
-}
-/**
-* Funtion use for creat a button.
-* @param {Display text on button} buttonLabel 
-* @param {the id of category} categoryId
-* @param {Where to put button on page} locationToAppend 
-* <span id="filtersButton">
-* </span>
-*/
-function creatAndAppendButton(buttonLabel, dataId, locationToAppend, classList) {
-    const button = document.createElement(`button`);
+    /**
+    * Funtion use for creat a button.
+    * @param {Display text on button} buttonLabel 
+    * @param {the id of category} categoryId
+    * @param {Where to put button on page} locationToAppend 
+    * <span id="filtersButton">
+    * </span>
+    */
+    function creatAndAppendButton(buttonLabel, dataId, locationToAppend, classList) {
+        const button = document.createElement(`button`);
+        
+        // Creat a class for labelButton to use it in CSS    
+        button.setAttribute(`class`, classList);
+        button.setAttribute(`data-id`, dataId); 
+        
+        const buttonName = document.createTextNode(buttonLabel);
+        button.appendChild(buttonName);
+        locationToAppend.appendChild(button);   
+        return button;   
+    }
+    /**
+    * callback function of filter click
+    * @param {The event bubbled up by JavaScript for a click} event 
+    */
+    function filterWorksCallback(event) {
+        const target = event.target;
+        resetSelectedClass();
+        target.classList.add(`selected`);
+        const selectedCategory = parseInt(target.getAttribute(`data-id`));
+        
+        fetchDatas().then(() => {
+            constructWorksItems(JSON.parse(localStorage.getItem(WORKS_ARRAY)), selectedCategory);
+        }); 
+    }
     
-    // Creat a class for labelButton to use it in CSS    
-    button.setAttribute(`class`, classList);
-    button.setAttribute(`data-id`, dataId); 
+    /**
+    * remove special class on buttons
+    * 
+    */
+    function resetSelectedClass() {
+        const buttonCategories = document.querySelectorAll(`.buttonCategory`);
+        buttonCategories.forEach(button => {
+            button.classList.remove(`selected`);
+        });
+    }
     
-    const buttonName = document.createTextNode(buttonLabel);
-    button.appendChild(buttonName);
-    locationToAppend.appendChild(button);   
-    return button;   
-}
-/**
-* callback function of filter click
-* @param {The event bubbled up by JavaScript for a click} event 
-*/
-function filterWorksCallback(event) {
-    const target = event.target;
-    resetSelectedClass();
-    target.classList.add(`selected`);
-    const selectedCategory = parseInt(target.getAttribute(`data-id`));
     
-    fetchDatas().then(() => {
-        constructWorksItems(JSON.parse(localStorage.getItem(WORKS_ARRAY)), selectedCategory);
-    }); 
-}
-
-/**
-* remove special class on buttons
-* 
-*/
-function resetSelectedClass() {
-    const buttonCategories = document.querySelectorAll(`.buttonCategory`);
-    buttonCategories.forEach(button => {
-        button.classList.remove(`selected`);
-    });
-}
-
-
-
-
-
-
+    
+    
+    
+    
+    

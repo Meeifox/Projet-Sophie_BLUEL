@@ -1,33 +1,38 @@
 const MODAL_CONTAINER = document.querySelector(`#modalContainer`);
 const FILES_INPUT = document.getElementById(`files`);
 
-function handleClickModification(){
-    
-    const buttonModification = document.querySelector(`#portfolio .portfolioConnected .buttonModify`);
-    buttonModification.addEventListener(`click`,(e)=> {
-        BODY.classList.add(`inModal`);
-        callSpinner();
-    }); 
-    
-    const closeModal = document.querySelectorAll(`.closeModal`);
-    closeModal.forEach(buttonClose => {
-        buttonClose.addEventListener(`click`,(e)=> { 
+function handleClickModification(softRefresh){
+    if (!softRefresh){
+        const buttonModification = document.querySelector(`#portfolio .portfolioConnected .buttonModify`);
+        buttonModification.addEventListener(`click`,(e)=> {
+            BODY.classList.add(`inModal`);
+            callSpinner();
+        }); 
+        
+        const closeModal = document.querySelectorAll(`.closeModal`);
+        closeModal.forEach(buttonClose => {
+            buttonClose.addEventListener(`click`,(e)=> { 
+                resetModal();   
+                BODY.classList.remove(`inModal`);
+            });
+        });  
+        const lastModal = document.querySelector(`.lastModal`);
+        lastModal.addEventListener(`click`,(e)=> { 
             resetModal();   
-            BODY.classList.remove(`inModal`);
         });
-    });  
-    const lastModal = document.querySelector(`.lastModal`);
-    lastModal.addEventListener(`click`,(e)=> { 
-        resetModal();   
-    });
-    
+        
+        addNewPicture();
+        dropPicture ();
+        validPictureButton();
+        
+    }    
     
     fetchDatas().then(result => {  
         constructModalWorksItems(result[0]);
+        addPictureToData(result[1]);
     });
     
-    addNewPicture();
-    dropPicture ();
+    
 }
 
 function constructModalWorksItems(worksArray) {
@@ -68,13 +73,16 @@ function addNewPicture(){
 async function deleteThisWork(e) {
     const button = e.target;
     const workId = parseInt(button.getAttribute(`data-id`));
-    if (confirm("Êtes-vous sûr de vouloir supprimer ce travail?")) {
+    if (confirm(`Êtes-vous sûr de vouloir supprimer ce travail?`)) {
         const response = await fetch(`${baseURL}/api/works/${workId}`, {
             method: 'DELETE',
             headers : {
                 'Authorization': `Bearer ${JSON.parse(localStorage.getItem(TOKEN)).data}`
             }
         });
+        if (response.ok) {
+            docIsReady(true);
+        }
     }
 }
 
@@ -148,5 +156,64 @@ function resetModal() {
     const uploadedImage = document.querySelector(`.newUploadImage`);
     if (uploadedImage){ 
         uploadedImage.remove();
+    }
+}
+/**
+* Add current picture to data base and gallery
+*/
+function addPictureToData(categoriesArray){
+    const selectedOption = document.querySelector(`#listBox`);
+    selectedOption.innerHTML = ``;
+    for (const category of categoriesArray) {
+        const option = document.createElement(`Option`);
+        option.innerHTML = category.name;
+        option.setAttribute(`value`, category.id);
+        selectedOption.appendChild(option);
+    }
+}
+
+function validPictureButton(){
+    const buttonValidationPicture = document.querySelector(`#validationPicture`);
+    buttonValidationPicture.addEventListener(`click`,(e)=> {        
+        e.preventDefault(); // prevent the default form submission
+        
+        // Get the form elements
+        let form = document.getElementById(`uploadForm`);
+        let filesInput = document.getElementById(`files`);
+        let titleInput = document.getElementById(`titleImage`);
+        let categoryInput = document.getElementById(`listBox`);
+        
+        // Create a FormData object to send the form data to the server
+        let formData = new FormData();
+        
+        // Check if form is correctly filled
+        if (filesInput.files[0] && titleInput.value && categoryInput.value){
+            // Define the onload function to read the file content and add it to the FormData object
+            formData.append('image', filesInput.files[0]);            
+            // Get the values of the other inputs and add them to the FormData object
+            formData.append('title', titleInput.value);
+            formData.append('category', categoryInput.value);
+            submitNewWork(formData);
+        }        
+    });   
+}
+
+async function submitNewWork(formData){
+    const response = await fetch(`${baseURL}/api/works`, {
+        method: 'POST',
+        headers: {
+            'Authorization': `Bearer ${JSON.parse(localStorage.getItem(TOKEN)).data}`
+        },
+        body: formData
+    });
+        
+    const data = await response.json();
+    if (!response.ok) {
+        throw new Error(data.message);
+    }
+    else {
+        callSpinner();
+        resetModal();
+        docIsReady(true); 
     }
 }

@@ -404,7 +404,7 @@ input[type="submit"]{
 }
 
 
-.closeModal {
+.closeModal{
 	padding : 10px ;
 	font-size: 16px;
 	position: absolute;
@@ -552,7 +552,7 @@ footer nav ul {
 	
 	color: #306685;
 }
-.rectangleBar, .navbar {
+.rectangleBar, #listBox {
 	border-style: hidden;
 	width: 100%;
     height: 51px;
@@ -560,7 +560,7 @@ footer nav ul {
     box-shadow: 0px 4px 14px rgb(0 0 0 / 9%);
     box-sizing: border-box;    
 }
-.rectangleBar, .navbar:hover {
+.rectangleBar, #listBox:hover {
 	border-style: hidden;
 }
 
@@ -588,6 +588,10 @@ footer nav ul {
 	max-height: 170px;
 }
 
+#dropArea:hover {
+	cursor: pointer;
+}
+
 .highlight {
 	border: 2px solid #f38181;
 	background-color: #f9d7d7;
@@ -597,15 +601,25 @@ footer nav ul {
 	width: 250px;
 }
 
+.lastModal {
+	padding: 10px;
+    font-size: 16px;
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    cursor: pointer;
+    border: none;
+    background-color: transparent;
+}
+
+.lastModal:hover {
+	cursor: pointer;
+}
 /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
 /* //////////////////////LOADING BAR////////////////////////////// */
 /* ::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::: */
 
-.lastModal {
-	position: absolute;
-	top : 10px;
-	left: 10px;
-}
+
 #modalSpinner {
 	display: none;
 	opacity: 0;

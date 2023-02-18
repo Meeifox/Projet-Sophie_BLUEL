@@ -127,21 +127,18 @@
 				<div id="dropArea">
 					<div class="pictureRectangle" >
 					<i class="fa-regular fa-image"></i>
-					<input type="button" id="insertImage" name="insertImage" value="+ Ajouter Photo " required>
-					<input type="file" id="files" style="display: none;" accept="image/jpeg, image/png">
+					<input type="button" id="insertImage"  value="+ Ajouter Photo " required>
+					<input type="file" id="files" style="display: none;" name="image" accept="image/jpeg, image/png">
 					<p>jpg, png : 4mo max</p>
 					</div>			
 				</div>
 				<div class="formPictureRectangle">
 					<label for="title">Titre :</label>
-					<input type="text" id="titleImage" name="titleForImage" class="rectangleBar" required>
+					<input type="text" id="titleImage" name="title" class="rectangleBar" required>
 					
 					<label for="category" id="categoryPicture">Categorie :
 					</label>
-					<select class="navbar">
-						<option>Objets</option>
-						<option>Appartements</option>
-						<option>Hotel & Restaurant</option>					
+					<select id="listBox" name="category">				
 					</select>
 				</div>
 				
