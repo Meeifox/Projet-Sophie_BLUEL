@@ -16,6 +16,7 @@ function handleClickModification(softRefresh){
                 BODY.classList.remove(`inModal`);
             });
         });  
+        
         const lastModal = document.querySelector(`.lastModal`);
         lastModal.addEventListener(`click`,(e)=> { 
             resetModal();   
@@ -26,7 +27,7 @@ function handleClickModification(softRefresh){
         validPictureButton();
         
     }    
-    
+    // Fetch data from the API and use it to construct the modal items for works and add any new pictures to the data
     fetchDatas().then(result => {  
         constructModalWorksItems(result[0]);
         addPictureToData(result[1]);
@@ -69,7 +70,7 @@ function addNewPicture(){
     }); 
     
 }
-
+// Delete a work from the API when its delete button is clicked
 async function deleteThisWork(e) {
     const button = e.target;
     const workId = parseInt(button.getAttribute(`data-id`));
@@ -110,9 +111,11 @@ function dropPicture () {
         event.preventDefault();
         dropArea.classList.remove(`highlight`);
         
+        // Get the dropped file
         const file = event.dataTransfer.files[0];
         
         if (file.type === `image/jpeg` || file.type === `image/png`) {
+            // Check if the file is an image file (JPEG or PNG) and is not too large
             if (file.size <= 4000000) {
                 FILES_INPUT.files = event.dataTransfer.files;
                 FILES_INPUT.dispatchEvent(new Event(`change`));
@@ -130,11 +133,13 @@ function dropPicture () {
         FILES_INPUT.click();
     });
     
+    // Handle clicking the insert image button
     FILES_INPUT.addEventListener(`change`, (event) => {
         const file = event.target.files[0];
         
         if (file.type === `image/jpeg` || file.type === `image/png`) {
             if (file.size <= 4000000) {
+                // Read the file and create an image element with the file content as the source
                 const reader = new FileReader();
                 reader.onload = (event) => {
                     const image = new Image();
@@ -206,7 +211,7 @@ async function submitNewWork(formData){
         },
         body: formData
     });
-        
+    
     const data = await response.json();
     if (!response.ok) {
         throw new Error(data.message);
