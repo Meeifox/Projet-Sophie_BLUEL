@@ -1,0 +1,10 @@
+{
+    "name": "Sophie Bluel",
+    "version": "1.0.0",
+    "scripts": {
+      "install": "npm install",
+      "start": "npm run build && node server.js",
+      "build": "webpack"
+    }
+  }
+  
